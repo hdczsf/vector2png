@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vector2png"
+version = "0.1.0"
+description = "Convert AI and DXF files into crisp PNG images"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "hdczsf" }
+]
+license = { text = "MIT" }
+dependencies = [
+    "pymupdf>=1.23.0",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Intended Audience :: Developers",
+    "Topic :: Multimedia :: Graphics",
+]
+keywords = ["ai", "dxf", "png", "converter", "vector"]
+
+[project.optional-dependencies]
+ai = [
+    "pdf2image>=1.16.0",
+    "Pillow>=9.0",
+]
+dxf = [
+    "ezdxf>=1.4.3",
+]
+full = [
+    "pdf2image>=1.16.0",
+    "Pillow>=9.0",
+    "ezdxf>=1.4.3",
+]
+dev = [
+    "pytest>=7.0",
+]
+
+[project.scripts]
+vector2png = "vector2png.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["vector2png*"]
