@@ -2,6 +2,8 @@
 
 一套优雅的 Python 工具，帮助你将 Adobe Illustrator (`.ai`) 与 AutoCAD DXF (`.dxf`) 文件快速转换为高质量 PNG 预览图，兼顾直观 API 与易用 CLI 的使用体验。
 
+**[📖 English Documentation](README.md)**
+
 ## 特性亮点
 
 - 直观的函数式 API（`vector2png.ai_to_png`、`vector2png.dxf_to_png`）与可配置的转换器类并存
