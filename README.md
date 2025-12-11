@@ -2,20 +2,23 @@
 
 Elegant Python utilities to transform Adobe Illustrator (`.ai`) and AutoCAD DXF (`.dxf`) files into crisp PNG previews. The project focuses on a polished developer experience with both programmatic and CLI workflows, documented in detail under `docs/` with quickstart, CLI, API, and troubleshooting guides. The scope is 2D vector content (lines, shapes, text, gradients); 3D objects or heavy effects are not rendered—flatten or project them upstream before conversion.
 
-**[📖 中文文档](README.cn.md)**
+**[📖 中文文档](https://github.com/hdczsf/vector2png/blob/master/README.cn.md)**
+
+**Project Links**
+- GitHub: https://github.com/hdczsf/vector2png
 
 ## Documentation
 
-- [Overview](docs/overview.md)
-- [Quickstart](docs/quickstart.md)
-- [CLI Guide](docs/cli.md)
-- [API Reference](docs/api.md)
-- [Options Deep Dive](docs/options.md)
-- [Dependencies](docs/dependencies.md)
-- [Troubleshooting](docs/troubleshooting.md)
-- [FAQ](docs/faq.md)
-- [Architecture](docs/architecture.md)
-- [Contributing](docs/contributing.md)
+- [Overview](https://github.com/hdczsf/vector2png/blob/master/docs/overview.md)
+- [Quickstart](https://github.com/hdczsf/vector2png/blob/master/docs/quickstart.md)
+- [CLI Guide](https://github.com/hdczsf/vector2png/blob/master/docs/cli.md)
+- [API Reference](https://github.com/hdczsf/vector2png/blob/master/docs/api.md)
+- [Options Deep Dive](https://github.com/hdczsf/vector2png/blob/master/docs/options.md)
+- [Dependencies](https://github.com/hdczsf/vector2png/blob/master/docs/dependencies.md)
+- [Troubleshooting](https://github.com/hdczsf/vector2png/blob/master/docs/troubleshooting.md)
+- [FAQ](https://github.com/hdczsf/vector2png/blob/master/docs/faq.md)
+- [Architecture](https://github.com/hdczsf/vector2png/blob/master/docs/architecture.md)
+- [Contributing](https://github.com/hdczsf/vector2png/blob/master/docs/contributing.md)
 
 ## Highlights
 

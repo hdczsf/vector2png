@@ -2,20 +2,23 @@
 
 一套优雅的 Python 工具，帮助你将 Adobe Illustrator (`.ai`) 与 AutoCAD DXF (`.dxf`) 文件快速转换为高质量 PNG 预览图，兼顾直观 API 与易用 CLI 的使用体验。适用范围是二维矢量内容（线条、形状、文字、渐变），不支持 3D 对象或重度特效，请在上游先展平/投影后再转换。
 
-**[📖 English Documentation](README.md)**
+**[📖 English Documentation](https://github.com/hdczsf/vector2png/blob/master/README.md)**
+
+**项目地址**
+- GitHub: https://github.com/hdczsf/vector2png
 
 ## 文档
 
-- [概览](docs/cn/overview.md)
-- [快速开始](docs/cn/quickstart.md)
-- [CLI 使用](docs/cn/cli.md)
-- [API 参考](docs/cn/api.md)
-- [参数详解](docs/cn/options.md)
-- [依赖说明](docs/cn/dependencies.md)
-- [故障排查](docs/cn/troubleshooting.md)
-- [FAQ](docs/cn/faq.md)
-- [架构](docs/cn/architecture.md)
-- [贡献指南](docs/cn/contributing.md)
+- [概览](https://github.com/hdczsf/vector2png/blob/master/docs/cn/overview.md)
+- [快速开始](https://github.com/hdczsf/vector2png/blob/master/docs/cn/quickstart.md)
+- [CLI 使用](https://github.com/hdczsf/vector2png/blob/master/docs/cn/cli.md)
+- [API 参考](https://github.com/hdczsf/vector2png/blob/master/docs/cn/api.md)
+- [参数详解](https://github.com/hdczsf/vector2png/blob/master/docs/cn/options.md)
+- [依赖说明](https://github.com/hdczsf/vector2png/blob/master/docs/cn/dependencies.md)
+- [故障排查](https://github.com/hdczsf/vector2png/blob/master/docs/cn/troubleshooting.md)
+- [FAQ](https://github.com/hdczsf/vector2png/blob/master/docs/cn/faq.md)
+- [架构](https://github.com/hdczsf/vector2png/blob/master/docs/cn/architecture.md)
+- [贡献指南](https://github.com/hdczsf/vector2png/blob/master/docs/cn/contributing.md)
 
 ## 特性亮点
 
