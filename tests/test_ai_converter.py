@@ -16,6 +16,13 @@ from vector2png.options import AIOptions
 class DummyPixmap:
     """Lightweight Pixmap stub that writes placeholder PNG bytes."""
 
+    def __init__(self, width: int = 2, height: int = 2, alpha: bool = False) -> None:
+        self.width = width
+        self.height = height
+        self.alpha = alpha
+        channels = 4 if alpha else 3
+        self.samples = b"\x00" * (width * height * channels)
+
     def save(self, path: str | Path) -> None:
         Path(path).write_bytes(b"PNG-DATA")
 
@@ -27,7 +34,7 @@ class DummyPage:
         self.rect = types.SimpleNamespace(width=100.0, height=50.0)
 
     def get_pixmap(self, matrix, alpha=False):  # noqa: D401 - short description
-        return DummyPixmap()
+        return DummyPixmap(alpha=alpha)
 
 
 class DummyDocument:
@@ -132,3 +139,55 @@ def test_ai_converter_raises_when_pdf2image_unavailable(tmp_path, fitz_stub):
             ai_file.with_suffix(".png"),
             AIOptions(prefer_method="pdf2image", fallback=False),
         )
+
+
+def test_pymupdf_background_color_composites_with_pillow(tmp_path, monkeypatch, fitz_stub):
+    """Ensure PyMuPDF path applies background_color via Pillow."""
+
+    class PilImageStub:
+        def __init__(self, mode, size, data=None, color=None):
+            self.mode = mode
+            self.size = size
+            self.data = data
+            self.color = color
+            self.pasted = None
+
+        def split(self):
+            return (None, None, None, "mask")
+
+        def paste(self, image, mask=None):
+            self.pasted = (image, mask)
+
+        def save(self, path, fmt):
+            Path(path).write_bytes(b"PYMUPDF-BG")
+
+    class PilStub(types.SimpleNamespace):
+        def __init__(self):
+            super().__init__(
+                new=lambda mode, size, color: PilImageStub(mode, size, color=color),
+                frombytes=lambda mode, size, data: PilImageStub(mode, size, data=data),
+            )
+
+    pil_stub = PilStub()
+    real_optional_import = ai_module.optional_import
+
+    def fake_optional_import(module, package=None, hint=None):
+        if module == "PIL.Image":
+            return pil_stub
+        return real_optional_import(module, package=package, hint=hint)
+
+    ai_file = tmp_path / "bg_color.ai"
+    ai_file.write_bytes(b"%PDF-1.7 demo body")
+    png_file = tmp_path / "bg_color.png"
+
+    monkeypatch.setattr(ai_module, "optional_import", fake_optional_import)
+
+    converter = AIConverter()
+    result = converter.convert(
+        ai_file,
+        png_file,
+        AIOptions(prefer_method="pymupdf", background_color=(10, 20, 30)),
+    )
+
+    assert result == png_file
+    assert png_file.read_bytes() == b"PYMUPDF-BG"

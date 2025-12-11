@@ -68,6 +68,11 @@ vector2png dxf drawing.dxf output.png --layout Layout1 --color monochrome
 
 所有参数都封装在 `AIOptions`、`DXFOptions` 数据类中，可获得 IDE 补全与静态提示。
 
+AI 背景处理规则：
+- `transparent=True` 时输出 RGBA PNG，忽略 `background_color`。
+- `background_color` 仅在 `transparent=False` 时生效；PyMuPDF 与 pdf2image 路径都会合成该背景色（需要安装 Pillow）。
+- 若选择 PyMuPDF 并设置了 `background_color` 但未安装 Pillow，会抛出依赖缺失错误。
+
 ## 错误处理
 
 转换过程中若出现异常会抛出 `ConversionError`（或更具体的 `DependencyMissingError`）。当缺少可选依赖时，异常消息会明确告知需要安装的 extra，CLI 也会输出同样的信息并以非零状态退出。

@@ -70,6 +70,11 @@ The `examples/` directory contains simple scripts:
 
 Every option is exposed through the corresponding dataclass (`AIOptions`, `DXFOptions`) so IDEs can offer autocomplete and validation.
 
+Background handling for AI conversions:
+- `transparent=True` forces an RGBA PNG and overrides any `background_color`.
+- `background_color` applies only when `transparent=False`; both PyMuPDF and pdf2image paths will composite the color (requires Pillow).
+- If you prefer PyMuPDF but set `background_color` without Pillow installed, a dependency error will be raised.
+
 ## Error Handling
 
 All Runtime errors funnel through `ConversionError` (or the more specific `DependencyMissingError`). When an optional dependency is missing, the error message explains which extra to install. The CLI echoes the same error text and exits with a non-zero status code.

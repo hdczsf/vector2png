@@ -93,7 +93,22 @@ class AIConverter(BaseConverter[AIOptions]):
         page = doc[0]
         zoom = opts.dpi / 72.0
         mat = fitz.Matrix(zoom, zoom)
-        pix = page.get_pixmap(matrix=mat, alpha=opts.transparent)
+        require_alpha = opts.transparent or bool(opts.background_color)
+        pix = page.get_pixmap(matrix=mat, alpha=require_alpha)
+
+        if opts.background_color and not opts.transparent:
+            pil = optional_import("PIL.Image", package="Pillow")
+            mode = "RGBA" if getattr(pix, "alpha", False) else "RGB"
+            image = pil.frombytes(mode, (pix.width, pix.height), pix.samples)
+            background = pil.new("RGB", image.size, opts.background_color)
+            if mode == "RGBA":
+                background.paste(image, mask=image.split()[3])
+            else:
+                background.paste(image)
+            background.save(png_path, "PNG")
+            doc.close()
+            return True
+
         pix.save(png_path)
         doc.close()
         return True

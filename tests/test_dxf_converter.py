@@ -42,6 +42,7 @@ class DummyDoc:
     def __init__(self, path: Path) -> None:
         self.path = path
         self.layouts = DummyLayouts()
+        self.header = {"$PDSIZE": 0}
 
     def modelspace(self) -> DummyLayout:
         return DummyLayout("Model")
