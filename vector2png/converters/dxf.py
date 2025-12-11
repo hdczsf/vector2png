@@ -17,7 +17,7 @@ from .base import BaseConverter
 class DXFConverter(BaseConverter[DXFOptions]):
     """Convert DXF drawings into PNG previews."""
 
-    # 捕获 \H<倍数>x 或 \H<倍数>x;（大小写均可），用于相对字号。
+    # Capture \H<factor>x or \H<factor>x; (case-insensitive), used for relative text height.
     _RELATIVE_SIZE_PATTERN = re.compile(r"\\H([0-9]*\\.?[0-9]+)x;?", re.IGNORECASE)
 
     def __init__(self) -> None:
@@ -66,7 +66,16 @@ class DXFConverter(BaseConverter[DXFOptions]):
         context = RenderContext(doc)
         backend = pymupdf_backend.PyMuPdfBackend()
         frontend = Frontend(context, backend, config=cfg)
-        frontend.draw_layout(drawing_source)
+        layout_label = opts.layout_name or "modelspace"
+        try:
+            if not any(drawing_source):
+                raise ConversionError(f"Layout '{layout_label}' contains no drawable entities")
+            frontend.draw_layout(drawing_source)
+        except ConversionError:
+            raise
+        except Exception as exc:
+            self.logger.debug("Drawing layout '%s' failed: %s", layout_label, exc, exc_info=True)
+            raise ConversionError(f"Failed to render layout '{layout_label}': {exc}") from exc
 
         margins = (
             layout_module.Margins.all(opts.margins)
@@ -87,7 +96,18 @@ class DXFConverter(BaseConverter[DXFOptions]):
 
         page = layout_module.Page(**page_kwargs)
         settings = layout_module.Settings(scale=opts.scale, fit_page=True)
-        png_bytes = backend.get_pixmap_bytes(page, fmt="png", settings=settings, dpi=opts.dpi)
+        try:
+            png_bytes = backend.get_pixmap_bytes(page, fmt="png", settings=settings, dpi=opts.dpi)
+        except ValueError as exc:  # ezdxf reports empty/invalid bbox, etc.
+            self.logger.debug("Rendering failed for layout '%s': %s", layout_label, exc, exc_info=True)
+            raise ConversionError(
+                f"Failed to render layout '{layout_label}': empty or invalid bounding box "
+                "(no drawable content or bad extents)."
+            ) from exc
+        except Exception as exc:
+            self.logger.debug("Rendering failed for layout '%s': %s", layout_label, exc, exc_info=True)
+            raise ConversionError(f"Failed to render layout '{layout_label}': {exc}") from exc
+
         png_path.write_bytes(png_bytes)
         return png_path
 

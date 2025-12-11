@@ -113,6 +113,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     except (ConversionError, DependencyMissingError, FileNotFoundError) as exc:
         logging.error("%s", exc)
         return 1
+    except Exception as exc:  # pragma: no cover - defensive
+        logging.debug("Unexpected error", exc_info=True)
+        logging.error("Unexpected error: %s", exc)
+        return 1
 
     return 0
 

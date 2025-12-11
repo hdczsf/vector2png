@@ -86,32 +86,50 @@ class AIConverter(BaseConverter[AIOptions]):
         if fitz is None:
             raise DependencyMissingError("PyMuPDF", "Install the base vector2png package dependencies.")
 
-        doc = fitz.open(ai_path)
-        if doc.page_count == 0:
-            raise ConversionError("AI file contains no pages")
+        try:
+            doc = fitz.open(ai_path)
+        except Exception as exc:
+            raise ConversionError(f"Failed to open AI file with PyMuPDF: {exc}") from exc
 
-        page = doc[0]
-        zoom = opts.dpi / 72.0
-        mat = fitz.Matrix(zoom, zoom)
-        require_alpha = opts.transparent or bool(opts.background_color)
-        pix = page.get_pixmap(matrix=mat, alpha=require_alpha)
+        try:
+            if doc.page_count == 0:
+                raise ConversionError("AI file contains no pages")
 
-        if opts.background_color and not opts.transparent:
-            pil = optional_import("PIL.Image", package="Pillow")
-            mode = "RGBA" if getattr(pix, "alpha", False) else "RGB"
-            image = pil.frombytes(mode, (pix.width, pix.height), pix.samples)
-            background = pil.new("RGB", image.size, opts.background_color)
-            if mode == "RGBA":
-                background.paste(image, mask=image.split()[3])
-            else:
-                background.paste(image)
-            background.save(png_path, "PNG")
-            doc.close()
+            page = doc[0]
+            zoom = opts.dpi / 72.0
+            mat = fitz.Matrix(zoom, zoom)
+            require_alpha = opts.transparent or bool(opts.background_color)
+            pix = page.get_pixmap(matrix=mat, alpha=require_alpha)
+
+            if opts.background_color and not opts.transparent:
+                pil = optional_import("PIL.Image", package="Pillow")
+                mode = "RGBA" if getattr(pix, "alpha", False) else "RGB"
+                image = pil.frombytes(mode, (pix.width, pix.height), pix.samples)
+                background = pil.new("RGB", image.size, opts.background_color)
+                if mode == "RGBA":
+                    background.paste(image, mask=image.split()[3])
+                else:
+                    background.paste(image)
+                background.save(png_path, "PNG")
+                return True
+
+            pix.save(png_path)
             return True
-
-        pix.save(png_path)
-        doc.close()
-        return True
+        except ConversionError:
+            raise
+        except ValueError as exc:
+            self.logger.debug("PyMuPDF rendering failed (value error): %s", exc, exc_info=True)
+            raise ConversionError(
+                f"PyMuPDF failed to render '{ai_path}': invalid page geometry or empty content ({exc})."
+            ) from exc
+        except Exception as exc:
+            self.logger.debug("PyMuPDF rendering failed: %s", exc, exc_info=True)
+            raise ConversionError(f"PyMuPDF failed to render '{ai_path}': {exc}") from exc
+        finally:
+            try:
+                doc.close()
+            except Exception:
+                pass
 
     def _convert_with_pdf2image(self, ai_path: Path, png_path: Path, opts: AIOptions) -> bool:
         """Render the AI file through pdf2image when available."""
@@ -122,14 +140,22 @@ class AIConverter(BaseConverter[AIOptions]):
             "pdf2image",
             hint="Install the 'pdf2image' extra and ensure Poppler is present",
         )
-        images = pdf2image.convert_from_path(
-            str(ai_path),
-            dpi=opts.dpi,
-            first_page=1,
-            last_page=1,
-            fmt="png",
-            transparent=opts.transparent,
-        )
+        try:
+            images = pdf2image.convert_from_path(
+                str(ai_path),
+                dpi=opts.dpi,
+                first_page=1,
+                last_page=1,
+                fmt="png",
+                transparent=opts.transparent,
+            )
+        except Exception as exc:
+            self.logger.debug("pdf2image rendering failed: %s", exc, exc_info=True)
+            raise ConversionError(
+                f"pdf2image failed to render '{ai_path}': {exc}. "
+                "Ensure Poppler is installed and the AI/PDF content is valid."
+            ) from exc
+
         if not images:
             raise ConversionError("pdf2image returned no images")
 

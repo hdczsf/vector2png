@@ -15,6 +15,8 @@
   - The pipeline is 2D only; flatten or project 3D/effects upstream before converting.
 - DXF layout not found
   - Ensure `--layout` matches `doc.layouts`; check available via ezdxf or remove the flag to use modelspace.
+- DXF layout renders with “empty or invalid bounding box”
+  - The chosen layout likely has no drawable entities. Switch to a layout that contains geometry or add content.
 - DXF point sizes look off
   - Set `--pdsize` (defaults to 1 when <=0) or disable relative sizing warnings.
 - Output resolution too low/high
