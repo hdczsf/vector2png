@@ -1,8 +1,21 @@
 # vector2png
 
-一套优雅的 Python 工具，帮助你将 Adobe Illustrator (`.ai`) 与 AutoCAD DXF (`.dxf`) 文件快速转换为高质量 PNG 预览图，兼顾直观 API 与易用 CLI 的使用体验。
+一套优雅的 Python 工具，帮助你将 Adobe Illustrator (`.ai`) 与 AutoCAD DXF (`.dxf`) 文件快速转换为高质量 PNG 预览图，兼顾直观 API 与易用 CLI 的使用体验。适用范围是二维矢量内容（线条、形状、文字、渐变），不支持 3D 对象或重度特效，请在上游先展平/投影后再转换。
 
 **[📖 English Documentation](README.md)**
+
+## 文档
+
+- [概览](docs/cn/overview.md)
+- [快速开始](docs/cn/quickstart.md)
+- [CLI 使用](docs/cn/cli.md)
+- [API 参考](docs/cn/api.md)
+- [参数详解](docs/cn/options.md)
+- [依赖说明](docs/cn/dependencies.md)
+- [故障排查](docs/cn/troubleshooting.md)
+- [FAQ](docs/cn/faq.md)
+- [架构](docs/cn/architecture.md)
+- [贡献指南](docs/cn/contributing.md)
 
 ## 特性亮点
 

@@ -1,0 +1,23 @@
+# 故障排查
+
+- `Dependency 'PyMuPDF' is required...`
+  - 安装基础包或相关 extra：`pip install vector2png`（或 `[ai]`、`[full]`）。
+- `pdf2image` 错误或找不到 `pdftoppm`
+  - 安装 Poppler（Linux 安装 `poppler-utils`，macOS `brew install poppler`，Windows 安装 `pdftoppm.exe` 并加入 PATH）。
+- 背景色未生效
+  - `transparent=True` 会忽略 `background_color`。
+  - 需安装 Pillow 才能合成背景；可用 `Pillow` 或 `vector2png[ai]`。
+- PyMuPDF + `background_color` 报依赖错误
+  - 安装 Pillow，或使用 pdf2image 渲染（`--prefer pdf2image`）。
+- 透明输出仍然是白底
+  - 源文件可能包含白色矩形；透明无法移除已绘制的内容。
+- 3D 内容消失或被压平
+  - 当前仅支持 2D 渲染，请在上游先展平/投影 3D 或特效后再转换。
+- DXF 布局不存在
+  - 确认 `--layout` 名称；或去掉参数使用 modelspace。
+- DXF 点大小不对
+  - 设置 `--pdsize`（<=0 默认 1）或调整相对尺寸。
+- 输出分辨率不合适
+  - 调整 `--dpi`；DPI 同比放大宽高。
+- 仍有问题？
+  - 试 `--prefer pdf2image --no-fallback` 或 `--prefer pymupdf --no-fallback` 定位渲染器，并提供错误信息。 

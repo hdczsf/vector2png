@@ -1,0 +1,23 @@
+# Troubleshooting
+
+- `Dependency 'PyMuPDF' is required...`
+  - Install base package or extras: `pip install vector2png` (or `[ai]`, `[full]`).
+- `pdf2image` errors or `pdftoppm` not found
+  - Install Poppler (`apt-get install poppler-utils`, `brew install poppler`) and ensure it is on PATH.
+- Background color ignored
+  - `transparent=True` overrides `background_color`.
+  - Pillow is required for background compositing; install `Pillow` or `vector2png[ai]`.
+- PyMuPDF + `background_color` raises dependency error
+  - Install Pillow or use pdf2image (`--prefer pdf2image`) so background can be applied.
+- AI file converts with unexpected white box
+  - Source AI/PDF may include a white rectangle; transparency cannot remove drawn content.
+- 3D content disappears or looks flattened
+  - The pipeline is 2D only; flatten or project 3D/effects upstream before converting.
+- DXF layout not found
+  - Ensure `--layout` matches `doc.layouts`; check available via ezdxf or remove the flag to use modelspace.
+- DXF point sizes look off
+  - Set `--pdsize` (defaults to 1 when <=0) or disable relative sizing warnings.
+- Output resolution too low/high
+  - Adjust `--dpi`; remember DPI scales both dimensions.
+- Still failing?
+  - Run with `--prefer pdf2image --no-fallback` or `--prefer pymupdf --no-fallback` to isolate renderer issues and share the error message. 
